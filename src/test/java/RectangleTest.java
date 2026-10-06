@@ -5,7 +5,7 @@ class RectangleTest {
 
     @Test
     void height_setter() {
-        Rectangle r = new Rectangle(4, 4);      // préparer
+        Rectangle r = new Rectangle(3, 4);      // préparer
 
         double resultat = r.height();             // agir
 
