@@ -30,7 +30,7 @@ class MontantTest {
 
     @Test
     void value_digits_refused(){
-        assertThrows(IllegalArgumentException.class, () -> new Montant(new BigDecimal("10.000"), euro));
+        assertThrows(IllegalArgumentException.class, () -> new Montant(new BigDecimal("10.005"), euro));
     }
 
     @Test
@@ -48,6 +48,6 @@ class MontantTest {
 
     @Test
     void yen_double_value(){
-        assertThrows(IllegalArgumentException.class, () -> new Montant(new BigDecimal("10.00"), yen));
+        assertThrows(IllegalArgumentException.class, () -> new Montant(new BigDecimal("10.05"), yen));
     }
 }
