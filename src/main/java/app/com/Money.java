@@ -28,23 +28,23 @@ record Money(BigDecimal amount, Currency currency){
     }
 
     boolean isGreaterThan(Money x){
-        checkCurrency(x);
+        requireSameCurrency(x);
         return amount.compareTo(x.amount) > 0;
     }
 
     Money add(Money x){
-        checkCurrency(x);
+        requireSameCurrency(x);
         return new Money(amount.add(x.amount),currency);
     }
 
     Money subtract(Money x){
-        checkCurrency(x);
+        requireSameCurrency(x);
         return new Money(amount.subtract(x.amount),currency);
     }
 
-    private void checkCurrency(Money a){
-        if (currency != a.currency){
-            throw new IllegalArgumentException("Different currency");
+    private void requireSameCurrency(Money a){
+        if (!currency.equals(a.currency)){
+            throw new IllegalArgumentException("Unmatch currency "+currency+"/"+a.currency);
         }
     }
 }
