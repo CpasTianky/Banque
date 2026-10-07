@@ -14,6 +14,20 @@ record Money(BigDecimal amount, Currency currency){
         } catch (ArithmeticException e) {
             throw new IllegalArgumentException("Rounding error",e);
         }
+    }
+    Money add(Money x){
+        checkCurrency(this,x);
+        return new Money(amount.add(x.amount),currency);
+    }
 
+    Money subtract(Money x){
+        checkCurrency(this,x);
+        return new Money(amount.subtract(x.amount),currency);
+    }
+
+    void checkCurrency(Money a, Money b){
+        if (a.currency != b.currency){
+            throw new IllegalArgumentException("Different currency");
+        }
     }
 }
