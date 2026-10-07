@@ -31,6 +31,16 @@ class MoneyTest {
         void rejects_null_currency() {
             assertThrows(NullPointerException.class, () -> new Money(new BigDecimal("10.00"), null));
         }
+
+        @Test
+        void detects_zero(){
+            Money a = new Money(BigDecimal.ZERO, euro);
+            Money b = new Money(new BigDecimal("1"), euro);
+            Money c = new Money(BigDecimal.ZERO, yen);
+            assertTrue(a.isZero());
+            assertFalse(b.isZero());
+            assertTrue(c.isZero());
+        }
     }
 
     @Nested
@@ -79,10 +89,10 @@ class MoneyTest {
     class Arithmetic {
         @Test
         void adds_two_amounts_of_same_currency(){
-            Money a = new Money(new BigDecimal("1"), euro);
-            Money b = new Money(new BigDecimal("1"), euro);
+            Money a = new Money(new BigDecimal("1.50"), euro);
+            Money b = new Money(new BigDecimal("3.25"), euro);
 
-            assertEquals(a.add(b),new Money(new BigDecimal("2"),euro));
+            assertEquals(new Money(new BigDecimal("4.75"),euro),a.add(b));
         }
 
         @Test
@@ -91,8 +101,8 @@ class MoneyTest {
             Money b = new Money(new BigDecimal("1"), euro);
             a.add(b);
 
-            assertEquals(a,new Money(new BigDecimal("1"), euro));
-            assertEquals(b,new Money(new BigDecimal("1"), euro));
+            assertEquals(new Money(new BigDecimal("1"), euro),a);
+            assertEquals(new Money(new BigDecimal("1"), euro),b);
         }
 
         @Test
@@ -108,7 +118,7 @@ class MoneyTest {
             Money a = new Money(new BigDecimal("3"), euro);
             Money b = new Money(new BigDecimal("1"), euro);
 
-            assertEquals(a.subtract(b),new Money(new BigDecimal("2"),euro));
+            assertEquals(new Money(new BigDecimal("2"),euro),a.subtract(b));
         }
 
         @Test
@@ -116,7 +126,7 @@ class MoneyTest {
             Money a = new Money(new BigDecimal("1"), euro);
             Money b = new Money(new BigDecimal("3"), euro);
 
-            assertEquals(a.subtract(b),new Money(new BigDecimal("-2"),euro));
+            assertEquals(new Money(new BigDecimal("-2"),euro),a.subtract(b));
         }
 
         @Test
@@ -130,6 +140,33 @@ class MoneyTest {
 
     @Nested
     class Comparison{
+        @Test
+        void creates_zero_in_given_currency(){
+            Money a = new Money(new BigDecimal("0.00"), euro);
+            assertEquals(a, Money.zero(euro));
+        }
 
+        @Test
+        void detects_negative_amount(){
+            Money a = new Money(new BigDecimal("-10"), euro);
+            Money b = new Money(new BigDecimal("10"), euro);
+            assertTrue(a.isNegative());
+            assertFalse(b.isNegative());
+        }
+
+        @Test
+        void compares_amounts_of_same_currency(){
+            Money a = new Money(new BigDecimal("10"), euro);
+            Money b = new Money(new BigDecimal("20"), euro);
+            assertTrue(b.isGreaterThan(a));
+            assertFalse(a.isGreaterThan(b));
+        }
+
+        @Test
+        void rejects_comparison_of_different_currencies(){
+            Money a = new Money(new BigDecimal("10"), euro);
+            Money b = new Money(new BigDecimal("20"), yen);
+            assertThrows(IllegalArgumentException.class, () -> a.isGreaterThan(b));
+        }
     }
 }

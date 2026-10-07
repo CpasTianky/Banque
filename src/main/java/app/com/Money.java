@@ -12,21 +12,38 @@ record Money(BigDecimal amount, Currency currency){
         try {
             amount = amount.setScale(currency.getDefaultFractionDigits(), RoundingMode.UNNECESSARY);
         } catch (ArithmeticException e) {
-            throw new IllegalArgumentException("Rounding error",e);
+            throw new IllegalArgumentException("Rounding error "+amount+" - "+currency,e);
         }
     }
+    static Money zero(Currency currency){
+        return new Money(BigDecimal.ZERO,currency);
+    }
+
+    boolean isZero(){
+        return amount.signum() == 0;
+    }
+
+    boolean isNegative(){
+        return amount.signum() == -1;
+    }
+
+    boolean isGreaterThan(Money x){
+        checkCurrency(x);
+        return amount.compareTo(x.amount) > 0;
+    }
+
     Money add(Money x){
-        checkCurrency(this,x);
+        checkCurrency(x);
         return new Money(amount.add(x.amount),currency);
     }
 
     Money subtract(Money x){
-        checkCurrency(this,x);
+        checkCurrency(x);
         return new Money(amount.subtract(x.amount),currency);
     }
 
-    void checkCurrency(Money a, Money b){
-        if (a.currency != b.currency){
+    private void checkCurrency(Money a){
+        if (currency != a.currency){
             throw new IllegalArgumentException("Different currency");
         }
     }
